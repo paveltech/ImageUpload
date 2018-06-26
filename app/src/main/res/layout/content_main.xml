@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,12 +12,29 @@
         android:id="@+id/select_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/colorWhite"
-        android:text="@string/upload_image"
         android:layout_centerVertical="true"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorPrimary"
+
+        android:text="Select Image"
+        android:textColor="@color/colorWhite"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="98dp" />
 
 
+    <Button
+        android:id="@+id/upload_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@color/colorPrimary"
+        android:layout_gravity="center"
 
-</android.support.constraint.ConstraintLayout>
+        android:text="@string/upload_image"
+        android:textColor="@color/colorWhite"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="275dp"
+        tools:ignore="MissingConstraints" />
+
+
+</LinearLayout>

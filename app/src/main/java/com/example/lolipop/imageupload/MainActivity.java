@@ -1,25 +1,17 @@
 package com.example.lolipop.imageupload;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import java.io.File;
@@ -37,13 +29,23 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_GALLERY_CODE = 200;
     private static final int READ_REQUEST_CODE = 300;
-    private static final String SERVER_PATH = "http://banglahdnatok.com/";
+    private static final String SERVER_PATH = "http://batsurvey.clientdemo.club/";
     private Uri uri;
+    public UploadImageInterface uploadImageInterface;
+    public Button upload_image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button selectUploadButton = (Button)findViewById(R.id.select_image);
+        upload_image = (Button) findViewById(R.id.upload_image);
+        upload_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
+        uploadImageInterface = RetrofitClientOption.getRetrofit().create(UploadImageInterface.class);
         selectUploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,12 +77,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 UploadImageInterface uploadImage = retrofit.create(UploadImageInterface.class);
-                Call<UploadObject> fileUpload = uploadImage.uploadFile(fileToUpload, filename);
+                Call<UploadObject> fileUpload = uploadImage.uploadFile(fileToUpload, filename , "21376812378" , "7832748" , "761723786" , "campaign");
                 fileUpload.enqueue(new Callback<UploadObject>() {
                     @Override
                     public void onResponse(Call<UploadObject> call, Response<UploadObject> response) {
                         Toast.makeText(MainActivity.this, "Response " + response.raw().message(), Toast.LENGTH_LONG).show();
                         Toast.makeText(MainActivity.this, "Success " + response.body().getSuccess(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onFailure(Call<UploadObject> call, Throwable t) {
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         if(uri != null){
             String filePath = getRealPathFromURIPath(uri, MainActivity.this);
+            Toast.makeText(this, ""+filePath, Toast.LENGTH_SHORT).show();
             File file = new File(filePath);
             RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), mFile);
@@ -115,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             UploadImageInterface uploadImage = retrofit.create(UploadImageInterface.class);
-            Call<UploadObject> fileUpload = uploadImage.uploadFile(fileToUpload, filename);
+            Call<UploadObject> fileUpload = uploadImage.uploadFile(fileToUpload, filename , "21376812378" , "7832748" , "761723786" , "campaign");
             fileUpload.enqueue(new Callback<UploadObject>() {
                 @Override
                 public void onResponse(Call<UploadObject> call, Response<UploadObject> response) {
@@ -132,5 +136,28 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         Log.d(TAG, "Permission has been denied");
+    }
+
+
+    public void uploadImage(){
+        String filePath = getRealPathFromURIPath(uri , MainActivity.this);
+        Toast.makeText(this, ""+filePath, Toast.LENGTH_SHORT).show();
+        File file = new File(filePath);
+        RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), mFile);
+        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
+
+        Call<UploadObject> fileUpload = uploadImageInterface.uploadFile(fileToUpload, filename , "21376812378" , "7832748" , "761723786" , "campaign");
+        fileUpload.enqueue(new Callback<UploadObject>() {
+            @Override
+            public void onResponse(Call<UploadObject> call, Response<UploadObject> response) {
+                Toast.makeText(MainActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<UploadObject> call, Throwable t) {
+
+            }
+        });
     }
 }
